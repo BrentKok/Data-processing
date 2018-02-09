@@ -1,5 +1,7 @@
-# dataweek1
-Data Processing week 1
+# Data Processing
+Design Homework included for: 
+- Week 1
+-
 
 index.html
 https://brentkok.github.io/Design/
