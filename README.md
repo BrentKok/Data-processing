@@ -2,4 +2,4 @@
 Data Processing week 1
 
 index.html
-https://brentkok.github.io/dataweek1/
+https://brentkok.github.io/Design/
