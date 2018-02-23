@@ -4,15 +4,14 @@ html, body {
 }
 
 .bar {
-	fill: #0080FF;
+	fill: steelblue;
 }
 
 .bar:hover {
-	fill: #003366;
+	fill: brown;
 }
 
 .text {
 	fill: white;
 	font-family: sans-serif;
 }
-
