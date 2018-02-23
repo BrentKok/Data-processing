@@ -1,0 +1,18 @@
+html, body {
+	margin: 0;
+	height: 100%
+}
+
+.bar {
+	fill: #0080FF;
+}
+
+.bar:hover {
+	fill: #003366;
+}
+
+.text {
+	fill: white;
+	font-family: sans-serif;
+}
+
