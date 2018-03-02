@@ -6,7 +6,7 @@ import json
 csvfile = open('data.csv', 'r')
 jsonfile = open('scatter.json', 'w')
 
-columns = ("Country","GDP", "Population")
+columns = ("Country", "Member", "GDP", "Population")
 reader = csv.DictReader( csvfile, columns)
 read = list(reader)
 readerSize = len(read)
