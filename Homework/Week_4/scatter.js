@@ -123,7 +123,7 @@ function load() {
               .selectAll("text")
               .data(color_countries)
               .enter().append("text")
-                      .attr("class", "legend_text_box")
+                      .attr("class", "rectanglelegend")
                       .text(function(d, i) {return Object.keys(d.Member);})
                       .attr("x", width + margin.left + rect_width*2)  
                       .attr("y", function(d, i) { return i*20 - 3;})
