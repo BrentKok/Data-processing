@@ -23,8 +23,8 @@ function load() {
 
             // Changes the string (GDP in USD) to a number
             data.forEach(function(d) {
-              d.["Population"] = +d["Population"];
-              d.["GDP"] = +d["GDP"];
+              d."Population" = +d["Population"];
+              d."GDP" = +d["GDP"];
             });
 
 
