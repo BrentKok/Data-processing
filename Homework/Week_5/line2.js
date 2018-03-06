@@ -83,3 +83,4 @@ console.log(data[data.length-1].max);
 console.log(data[0].max);
 console.log(y(data[0].max));
 console.log(y(data[0].min));
+}
