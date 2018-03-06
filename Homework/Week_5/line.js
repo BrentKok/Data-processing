@@ -7,7 +7,7 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-var parseTime = d3.timeParse("%d%m%Y").parse; 
+var parseTime = d3.timeParse("%d%m%Y"); 
 
 var x = d3.scaleTime().range[0, width],
     y = d3.scaleLinear().range([height, 0]),
