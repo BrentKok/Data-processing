@@ -36,6 +36,9 @@ var	svg = d3.select("body")
 
 // Get the data
 d3.json("line.json", function(error, data) {
+
+	if (error) throw error;
+
 	data.forEach(function(d) {
 		d.date = parseDate(d.date);
 		d.min = +d.min;
