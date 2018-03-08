@@ -1,20 +1,20 @@
-body {
-	font: 10px sans-serif;
-}
+/*
+Name: Brent Kok
+Studentnumber: 10725156
+*/
 
-.axis--x path {
-  display: none;
+body { font: 8px Arial;}
+
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
 }
 
 .axis path,
 .axis line {
-	fill: none
-	stroke: #000
-	shape-rendering: crispEdges;
-}
-
-.line {
-  fill: none;
-  stroke: #000;
-  stroke-width: 1.5px;
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
 }
