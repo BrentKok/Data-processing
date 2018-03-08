@@ -1,94 +1,185 @@
 // Brent Kok
 // 10725156
 // Data Processing Week 5 - Line Graph
+// https://bl.ocks.org/jqadrad/a58719d82741b1642a2061c071ae2375
 
-// Setting margins for the place of the chart
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
 
-var parseTime = d3.timeParse("%d%m%Y"); 
+window.onload = function() {
+	
+	// Setting margins for the place of the chart
+	var svg = d3.select('svg'),
+		margin = {top: 30, right: 40, bottom: 30, left: 50},
+		width = 600 - margin.left - margin.right,
+		height = 270 - margin.top - margin.bottom,
+  		g = svg.append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-var x = d3.scaleTime().range[0, width],
-    y = d3.scaleLinear().range([height, 0]),
-    color = d3.scaleCategory10();
+	// Graph of the title
+	g.append('text')
+		.attr('x', (width - 2))             
+		.attr('y', 0 - (margin.top / 3))
+		.attr('text-anchor', 'middle')  
+		.style('font-size', '16px') 
+		.text('Temperature De Bilt & Berkhout');
 
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
+	// Transform date
+	var	parseDate = d3.time.format("%Y%m%d").parse;
 
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
+	// Scale x and y
+	var	x = d3.time.scale().range([0, width]);
+	var	y = d3.scale.linear().range([height, 0]);
 
-var line = d3.line()
-    .interpolate("basis")
-    .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.temperature); });
+	var color = d3.scale.category10();
 
-// Adding the graph to the page
-var canvas = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var	xAxis = d3.svg.axis().scale(x)
+		.orient("bottom");
 
-// Load the data from the data.csv file
-d3.json("line.json", function(error, data) {
-  if (error) throw error;
+	var	yAxis = d3.svg.axis().scale(y)
+		.orient("left");
 
-  color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; } ));
+	// Initialise line
+	var	line = d3.svg.line()
+		.x(function(d) { return x(d.date); })
+		.y(function(d) { return y(d.temp); });
+	
+	// Create svg element
+	var	svg = d3.select("body").append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+		.append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  data.forEach(function(d) {
-    d.date = parseDate(d.Date);
-  });
 
-  var region = data.columns.slice(1).map(function(id) {
-    return {
-      id: id,
-      values: data.map(function(d) {
-        return {date: d.date, average: d[id]};
-      })
-    };
-  });
+	d3.json("line.json", function(error, data) {
+		//data.forEach(function(d){
+			//d.date = parseDate(d.date);
+			//d.values = +d.values;
+	//	});
 
-  x.domain(d3.extent(data, function(d) { return d.date; }));
+		if (error) throw error;
 
-  y.domain([
-    d3.min(region, function(c) { return d3.min(c.values, function(d) { return d.average; }); }),
-    d3.max(region, function(c) { return d3.max(c.values, function(d) { return d.average; }); })
-  ]);       
-          
-  g.append("g")
-      .attr("class", "axis axis--x")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+		// Log data as a check
+		console.log(data);
 
-  g.append("g")
-      .attr("class", "axis axis--y")
-      .call(d3.axisLeft(y))
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", "0.71em")
-      .attr("fill", "#000")
-      .text("Temperature, C");
+		// Select columns
+		color.domain(d3.keys(data[0]).filter(function(key) { 
+			return key !== "date" && key !== "Max" && key !== "Min" && key !== "Average";
+		}));
 
-  var region = g.selectAll(".region")
-    .data(region)
-    .enter().append("g")
-      .attr("class", "region");
+		var Station = color.domain().map(function(name) {
+			return {
+				name: name,
+				values: data.map(function(d) {
+					return {date: d.date, temp: +d[name]};
+				})
+			};
+		});
 
-  region.append("path")
-      .attr("class", "line")
-      .attr("d", function(d) { return line(d.values); })
-      .style("stroke", function(d) { return z(d.id); });
+		// Set the domain for X
+		x.domain(d3.extent(data, function(d) { return d.date; }));
+		
+		// Set the domain for Y
+		y.domain([
+			d3.min(Station, function(c) { return d3.min(c.values, function(v) { return v.temp; }); }),
+			d3.max(Station, function(c) { return d3.max(c.values, function(v) { return v.temp; }); })
+		]);
 
-  region.append("text")
-      .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.average) + ")"; })
-      .attr("x", 3)
-      .attr("dy", "0.35em")
-      .style("font", "10px sans-serif")
-      .text(function(d) { return d.id; });
-});
+
+	/*
+	svg.selectAll("*").remove();
+
+	var legend = svg.selectAll('g')
+		.data(Station)
+		.enter()
+	.append('g')
+		.attr('class', 'legend');
+
+	legend.append('rect')
+		.attr('x', width - 20)
+		.attr('y', function(d, i){ return i * 20;})
+		.attr('width', 10)
+		.attr('height', 10)
+		.style('fill', function(d){
+			return color(d.name);
+		});
+
+	legend.append('text')
+		.attr('x', width - 8)
+		.attr('y', function(d, i){ return (i * 20) + 9;})
+		.text(function(d){ return d.name; });
+
+	legend
+			.on("click", function(d){
+				reDraw(d.name);
+			});
+	*/
+	
+	// Setting the X-axis including attributes
+		svg.append("g")		
+			.attr("class", "x axis")
+			.attr("transform", "translate(0," + height + ")")
+			.call (xAxis)
+		.append("text")
+			.attr("transform", "rotate(0)")
+			.attr("x", -15)
+			.attr("dx", ".71em")
+			.style("text-anchor", "end")
+			.text("Date");
+
+	    // Setting the Y-axis including attributes
+		svg.append("g")
+			.attr("class", "y axis")
+			.call(yAxis)
+		.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("y", -15)
+			.attr("dy", ".71em")
+			.style("text-anchor", "end")
+			.text("Temperature in C");
+
+		var Station = svg.selectAll(".Station")
+			.data(Station)
+			.enter().append("g")
+			.attr("class", "Station");
+
+	    // Draw lines
+		Station.append("path")
+			.attr("class", "line")
+			.attr("d", function(d) { 
+				return line(d.values); 
+			})
+			.style("stroke", function(d) { 
+				return color(d.name); 
+			});
+
+		Station.append("text")
+			.datum(function(d) { 
+				return { 
+					name: d.name, 
+					value: d.values[d.values.length - 1]
+				}; 
+			})
+			.attr("transform", function(d) { 
+				return "translate(" + x(d.value.date) + "," + y(d.value.temp) + ")"; 
+			})
+			.attr("x", 3)
+			.attr("dy", ".35em")
+			.text(function(d) { 
+				return d.name; 
+			});
+
+		Station.selectAll("circle")
+			.data(function(d){return d.values})
+			.enter()
+			.append("circle")
+			.attr("r", 3)
+			.attr("cx", function(d) { 
+				return x(d.date); 
+			})
+			.attr("cy", function(d) { 
+				return y(d.values); 
+			})
+			.style("fill", function(d,i,j) { 
+				return color(Station[j].name); 
+			});
+	});
+}		
