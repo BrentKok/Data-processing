@@ -5,7 +5,7 @@ Studentnumber: 10725156
 
 body { font: 8px Arial;}
 
-path { 
+.line { 
     stroke: steelblue;
     stroke-width: 2;
     fill: none;
